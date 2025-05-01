@@ -51,9 +51,9 @@ export class Game extends Scene
                 const x = Math.Between(50, this.scale.width - 50);  // Random x within game width
                 const y = Math.Between(50, this.scale.height - 50); // Random y within game height
                 const color = this.colors[Math.Between(0, this.colors.length - 1)];
-                const bubble = this.drawCircle(x, y, 10, color)
+                const bubble = this.drawCircle(x, y, 10, color);
                 
-                this.bubbles.push(new BubbleController(bubble, this.pointer!));
+                this.bubbles.push(new BubbleController(bubble, this.pointer!, this.input));
 
             },
             loop: true               // Keep repeating the event

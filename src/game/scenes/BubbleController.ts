@@ -5,14 +5,16 @@ import { Geom } from 'phaser';
 export default class BubbleController {
     private stateMachine: StateMachine;
     private bubble: Phaser.GameObjects.Arc;
+    private input: Phaser.Input.InputPlugin;
     private pointer: Phaser.Input.Pointer;
     private growthRate = 0.05;
     private pointDeceaseRate = 0.4;
     private point = 1000;
 
-    constructor(bubble: Phaser.GameObjects.Arc , pointer: Phaser.Input.Pointer) {
+    constructor(bubble: Phaser.GameObjects.Arc , pointer: Phaser.Input.Pointer, input: Phaser.Input.InputPlugin) {
         this.bubble = bubble;
         this.pointer = pointer;
+        this.input = input;
         
         this.stateMachine = new StateMachine(this)
 
@@ -23,7 +25,13 @@ export default class BubbleController {
         }).addState('popped', {
             onEnter: this.poppedOnEnter
         })
-
+        this.bubble.setInteractive({ useHandCursor: true });
+        
+        this.input.on('pointerdown', (pointer: { x: number; y: number; }) => {
+            if (this.stateMachine.isCurrentState('growing') && this.bubble.getBounds().contains(pointer.x, pointer.y)) {
+                this.stateMachine.setState('popped');
+            }
+        });
         this.stateMachine.setState('idle'); 
     }
 
@@ -48,6 +56,7 @@ export default class BubbleController {
         }
 
         if (this.point <= 0) {
+            this.point = 0;
             this.stateMachine.setState('popped');
             return;
         }
