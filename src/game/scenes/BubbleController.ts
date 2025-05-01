@@ -36,7 +36,7 @@ export default class BubbleController {
     }
 
     private growingOnUpdate(dt: number) {
-        if(this.bubble.getBounds().contains(this.pointer.x, this.pointer.y)) {
+        if(this.pointer.isDown && this.bubble.getBounds().contains(this.pointer.x, this.pointer.y)) {
             this.stateMachine.setState('popped');
             return;
         } else {
