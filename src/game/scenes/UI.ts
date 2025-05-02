@@ -21,7 +21,7 @@ export class UI extends Scene {
             fontSize: 32
         })
 
-        EventBus.on('bubble.popped', (score: number) => {
+        EventBus.on('score.marked', (score: number) => {
             if (score <= 0) {
                 return;
             }

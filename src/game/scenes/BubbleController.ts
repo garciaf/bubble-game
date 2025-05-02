@@ -3,19 +3,22 @@ import EventBus from '../utils/EventBus';
 
 export default class BubbleController {
     private stateMachine: StateMachine;
+    private scene: Phaser.Scene;
     private bubble: Phaser.GameObjects.Sprite;
     private input: Phaser.Input.InputPlugin;
     private radius: number;
     private pointer: Phaser.Input.Pointer;
-    private growthRate = 0.05;
-    private pointDeceaseRate = 0.4;
+    private growthRate = 0.1;
+    private pointDeceaseRate = 1;
+    private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
     private point = 1000;
 
-    constructor(bubble: Phaser.GameObjects.Sprite, pointer: Phaser.Input.Pointer, input: Phaser.Input.InputPlugin, radius: number) {
+    constructor(bubble: Phaser.GameObjects.Sprite, pointer: Phaser.Input.Pointer, input: Phaser.Input.InputPlugin, radius: number, scene: Phaser.Scene) {
         this.bubble = bubble;
         this.pointer = pointer;
         this.input = input;
         this.radius = radius;
+        this.scene = scene;
         
         this.stateMachine = new StateMachine(this)
 
@@ -40,6 +43,7 @@ export default class BubbleController {
     update(dt: number) {
         this.stateMachine.update(dt);
     }
+
 
     private idleOnEnter() {
         this.stateMachine.setState('growing');
@@ -66,7 +70,8 @@ export default class BubbleController {
     }
 
     private poppedOnEnter() {
-        EventBus.emit('bubble.popped', this.point);
+        EventBus.emit('bubble.popped', this);
+        EventBus.emit('score.marked', this.point);
         this.bubble.setVisible(false);
         this.bubble.setActive(false);
         this.bubble.destroy();

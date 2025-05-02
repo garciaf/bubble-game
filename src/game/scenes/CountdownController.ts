@@ -25,13 +25,15 @@ export default class CountdownController {
     private formatTime(time: number): string {
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
-        const milliseconds = Math.floor((time % 1) * 1000);
+        const milliseconds = Math.floor((time % 1) * 100);
         if (minutes > 0) {
             return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         } else if (seconds > 0) {
-            return `${seconds < 10 ? '0' : ''}${seconds}:${milliseconds}`;
+            return `${seconds}:${milliseconds}`;
         } else if (milliseconds > 0) {
             return `${milliseconds}`;   
+        } else {
+            return '0';
         }
     }
 }
