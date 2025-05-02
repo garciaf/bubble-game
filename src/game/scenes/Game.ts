@@ -7,9 +7,9 @@ export class Game extends Scene
 {   
     private bubbles: BubbleController[];
     private pointer?: Phaser.Input.Pointer;
-    private bubbleSpawnRate = 200; // 1 second 
+    private bubbleSpawnRate = 200; // 0.2 second 
     private countdown?: CountdownController;
-    private GameLength = 20;
+    private GameLength = 10;
     private radius = 10;
     private score = 0;
 

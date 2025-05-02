@@ -2,7 +2,6 @@ import { Scene } from 'phaser';
 import EventBus from '../utils/EventBus';
 
 export class UI extends Scene {
-    private coinLabel!: Phaser.GameObjects.Text
 	private score = 0;
 
     private formatNumber(number: number): string {
@@ -17,17 +16,12 @@ export class UI extends Scene {
         this.score = 0
     }
     create () {
-        this.coinLabel = this.add.text(36, 36, 'Score : 0', {
-            fontSize: 32
-        })
-
         EventBus.on('score.marked', (score: number) => {
             if (score <= 0) {
                 return;
             }
             this.score  += score
             this.showPointScored(this.formatNumber(score))
-            this.coinLabel.setText('Score : ' + this.formatNumber(this.score));
         });
     }
 
