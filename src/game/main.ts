@@ -1,5 +1,6 @@
 import { Game as MainGame } from './scenes/Game';
 import { UI } from './scenes/UI.js';
+import { GameOver } from './scenes/GameOver.js';
 
 import { AUTO, Game, Scale,Types } from 'phaser';
 
@@ -7,8 +8,8 @@ import { AUTO, Game, Scale,Types } from 'phaser';
 // https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Types.Core.GameConfig = {
     type: AUTO,
-    width: 1024,
-    height: 768,
+    width: window.innerWidth,
+    height: window.innerHeight,
     parent: 'game-container',
     backgroundColor: '#028af8',
     scale: {
@@ -17,7 +18,8 @@ const config: Types.Core.GameConfig = {
     },
     scene: [
         MainGame,
-        UI
+        UI,
+        GameOver
     ]
 };
 

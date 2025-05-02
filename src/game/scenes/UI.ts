@@ -3,9 +3,11 @@ import EventBus from '../utils/EventBus';
 
 export class UI extends Scene {
     private coinLabel!: Phaser.GameObjects.Text
-	private score = 0
+	private score = 0;
 
-
+    private formatNumber(number: number): string {
+        return new Intl.NumberFormat('fr-FR', { style: "currency", currency: "EUR" }).format(number);
+    }
     constructor() {
         super({
             key: 'ui'
@@ -20,9 +22,31 @@ export class UI extends Scene {
         })
 
         EventBus.on('bubble.popped', (score: number) => {
+            if (score <= 0) {
+                return;
+            }
             this.score  += score
-
-            this.coinLabel.setText('Score : ' + Math.floor(this.score))
+            this.showPointScored(this.formatNumber(score))
+            this.coinLabel.setText('Score : ' + this.formatNumber(this.score));
         });
     }
+
+    private showPointScored(point: string) {
+        const pointText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, `+${point}`, {
+            fontSize: 64,
+            color: '#00ff00'
+        }).setOrigin(0.5);
+
+        this.tweens.add({
+            targets: pointText,
+            y: pointText.y - 50,
+            alpha: 0,
+            duration: 1000,
+            ease: 'Power2',
+            onComplete: () => {
+                pointText.destroy();
+            }
+        });
+    }
+
 }

@@ -1,11 +1,15 @@
 import { Scene, GameObjects, Math, Geom } from 'phaser';
 import BubbleController from './BubbleController';
+import CountdownController from './CountdownController';
+import EventBus from '../utils/EventBus';
 
 export class Game extends Scene
 {   
     private bubbles: BubbleController[];
     private pointer?: Phaser.Input.Pointer;
     private bubbleSpawnRate = 500; // 1 second 
+    private countdown?: CountdownController;
+    private score = 0;
 
     private colors = [
         0xff0000,
@@ -33,11 +37,13 @@ export class Game extends Scene
     {
         this.bubbles = [];
         this.pointer = this.input.activePointer;
+        this.score = 0;
     }
 
     preload ()
     {
         this.load.setPath('assets');
+        this.load.image('sphere', 'sphere.png');
     }
 
     create ()
@@ -50,25 +56,36 @@ export class Game extends Scene
             callback: () => {
                 const x = Math.Between(50, this.scale.width - 50);  // Random x within game width
                 const y = Math.Between(50, this.scale.height - 50); // Random y within game height
-                const color = this.colors[Math.Between(0, this.colors.length - 1)];
-                const bubble = this.drawCircle(x, y, 10, color);
+                // const color = this.colors[Math.Between(0, this.colors.length - 1)];
+                const bubble = this.add.sprite(x, y, 'sphere',)
+                bubble.setDisplaySize(50*2, 50*2)
                 
-                this.bubbles.push(new BubbleController(bubble, this.pointer!, this.input));
+                this.bubbles.push(new BubbleController(bubble, this.pointer!, this.input, 50));
 
             },
             loop: true               // Keep repeating the event
         });
         this.scene.launch('ui');
+        this.countdown = new CountdownController(this, 10, () => {
+            this.scene.stop('ui');
+            this.scene.stop();
+            EventBus.off('bubble.popped');
+            this.scene.start('GameOver', { score: this.score });
+        });
+
+        EventBus.on('bubble.popped', (score: number) => {
+            if (score <= 0) {
+                return;
+            }
+            this.score  += score
+        });
     }
 
-    private drawCircle (x: number, y: number, radius: number, color: number)
-    {
-        return(this.add.circle(x, y, radius, color, 1));
-    }
-    
     update(_time: number, delta: number): void {
         this.bubbles.forEach(bubble => { 
             bubble.update(delta);
         });
+
+        this.countdown?.update(delta);
     }
 }
