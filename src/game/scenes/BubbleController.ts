@@ -3,22 +3,21 @@ import EventBus from '../utils/EventBus';
 
 export default class BubbleController {
     private stateMachine: StateMachine;
-    private scene: Phaser.Scene;
     private bubble: Phaser.GameObjects.Sprite;
     private input: Phaser.Input.InputPlugin;
+    private point: number;
     private radius: number;
     private pointer: Phaser.Input.Pointer;
     private growthRate = 0.1;
     private pointDeceaseRate = 1;
-    private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
-    private point = 1000;
 
-    constructor(bubble: Phaser.GameObjects.Sprite, pointer: Phaser.Input.Pointer, input: Phaser.Input.InputPlugin, radius: number, scene: Phaser.Scene) {
+    constructor(bubble: Phaser.GameObjects.Sprite, pointer: Phaser.Input.Pointer, input: Phaser.Input.InputPlugin, radius: number, point: number = 1000, pointDeceaseRate: number = 1) {
         this.bubble = bubble;
         this.pointer = pointer;
+        this.point = point;
         this.input = input;
         this.radius = radius;
-        this.scene = scene;
+        this.pointDeceaseRate = pointDeceaseRate;
         
         this.stateMachine = new StateMachine(this)
 
@@ -31,7 +30,7 @@ export default class BubbleController {
         })
         this.bubble.setInteractive({ useHandCursor: true });
         
-        this.input.on('pointerdown', (pointer: { x: number; y: number; }) => {
+        this.input.on('pointerup', (pointer: { x: number; y: number; }) => {
             if (this.stateMachine.isCurrentState('growing') && this.bubble.getBounds().contains(pointer.x, pointer.y)) {
                 this.stateMachine.setState('popped');
             }

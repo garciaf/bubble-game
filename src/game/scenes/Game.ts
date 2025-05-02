@@ -8,7 +8,12 @@ export class Game extends Scene
     private bubbles: BubbleController[];
     private pointer?: Phaser.Input.Pointer;
     private bubbleSpawnRate = 200; // 0.2 second 
+    private goldBubbleSpawnRate = 1000; // 5 seconds
+    private goldBubblePointValue = 10000;
+    private bubblePointValue = 1000;
     private countdown?: CountdownController;
+    private pointDeceaseRate = 1;
+    private goldPointDeceaseRate = 10;
     private GameLength = 10;
     private radius = 10;
     private score = 0;
@@ -38,18 +43,10 @@ export class Game extends Scene
 
         this.time.addEvent({
             delay: this.bubbleSpawnRate,            // Time in milliseconds (5000 ms = 5 seconds)
-            callback: () => {
-                const x = Math.Between(50, this.scale.width - 50);  // Random x within game width
-                const y = Math.Between(50, this.scale.height - 50); // Random y within game height
-                // const color = this.colors[Math.Between(0, this.colors.length - 1)];
-                const bubble = this.add.sprite(x, y, 'sphere',)
-                bubble.setDisplaySize(50*2, 50*2)
-                
-                this.bubbles.push(new BubbleController(bubble, this.pointer!, this.input, this.radius, this));
-
-            },
+            callback: this.spwawnRegularBubble.bind(this), // Bind the context to the current scene
             loop: true               // Keep repeating the event
         });
+        
         this.scene.launch('ui');
         this.countdown = new CountdownController(this, this.GameLength, () => {
             this.scene.stop('ui');
@@ -57,6 +54,16 @@ export class Game extends Scene
             EventBus.off('bubble.popped');
             EventBus.off('score.marked');
             this.scene.start('GameOver', { score: this.score });
+        });
+
+        this.time.addEvent({
+            delay: this.goldBubbleSpawnRate,            // Time in milliseconds (5000 ms = 5 seconds)
+            callback: this.SpawnGoldBubble.bind(this), // Bind the context to the current scene
+            loop: true               // Keep repeating the event
+        });
+
+        this.input.on('pointerup', () => {
+            this.cameras.main.shake(100, 0.01); // Shake for 500ms with intensity 0.01
         });
 
         EventBus.on('bubble.popped', (bubble: BubbleController) => {
@@ -81,4 +88,28 @@ export class Game extends Scene
 
         this.countdown?.update(delta);
     }
-}
+
+    /**
+     * Spawns a bubble at a random position within the game area.
+     * The bubble is added to the bubbles array for tracking.
+     */
+    private spwawnRegularBubble() {
+        this.spwanBubble();
+    }
+
+    private SpawnGoldBubble() {
+        this.spwanBubble(0xFFD700, this.goldBubblePointValue, this.goldPointDeceaseRate);
+    }
+
+    private spwanBubble(color?: number, point: number = this.bubblePointValue, pointDeceaseRate: number = this.pointDeceaseRate) { 
+        const x = Math.Between(50, this.scale.width - 50);  // Random x within game width
+        const y = Math.Between(50, this.scale.height - 50); // Random y within game height
+        const bubble = this.add.sprite(x, y, 'sphere')
+        if (color) {
+            bubble.setTint(color);
+        }
+        
+        bubble.setDisplaySize(50*2, 50*2)
+        this.bubbles.push(new BubbleController(bubble, this.pointer!, this.input, this.radius, point, pointDeceaseRate));
+    }
+}   
