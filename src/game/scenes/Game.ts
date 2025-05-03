@@ -13,7 +13,7 @@ export class Game extends Scene
     private countdown?: CountdownController;
     private pointDeceaseRate = 1;
     private goldPointDeceaseRate = 8;
-    private GameLength = 10;
+    private GameLength = 15;
     private radius = 10;
     private score = 0;
     private touched = false;
@@ -27,12 +27,6 @@ export class Game extends Scene
     {
         this.bubbles = [];
         this.score = 0;
-    }
-
-    preload ()
-    {
-        this.load.setPath('assets');
-        this.load.image('sphere', 'sphere.png');
     }
 
     create ()
