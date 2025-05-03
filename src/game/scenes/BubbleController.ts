@@ -4,18 +4,15 @@ import EventBus from '../utils/EventBus';
 export default class BubbleController {
     private stateMachine: StateMachine;
     private bubble: Phaser.GameObjects.Sprite;
-    private input: Phaser.Input.InputPlugin;
     private point: number;
+    private speedUp: number = 0.5;
     private radius: number;
-    private pointer: Phaser.Input.Pointer;
-    private growthRate = 0.1;
-    private pointDeceaseRate = 1;
+    private growthRate = 0.15;
+    private pointDeceaseRate = 0.5;
 
-    constructor(bubble: Phaser.GameObjects.Sprite, pointer: Phaser.Input.Pointer, input: Phaser.Input.InputPlugin, radius: number, point: number = 1000, pointDeceaseRate: number = 1) {
+    constructor(bubble: Phaser.GameObjects.Sprite, radius: number, point: number = 1000, pointDeceaseRate: number = 1) {
         this.bubble = bubble;
-        this.pointer = pointer;
         this.point = point;
-        this.input = input;
         this.radius = radius;
         this.pointDeceaseRate = pointDeceaseRate;
         
@@ -28,13 +25,6 @@ export default class BubbleController {
         }).addState('popped', {
             onEnter: this.poppedOnEnter
         })
-        this.bubble.setInteractive({ useHandCursor: true });
-        
-        this.input.on('pointerup', (pointer: { x: number; y: number; }) => {
-            if (this.stateMachine.isCurrentState('growing') && this.bubble.getBounds().contains(pointer.x, pointer.y)) {
-                this.stateMachine.setState('popped');
-            }
-        });
         this.stateMachine.setState('idle'); 
     }
 
@@ -43,22 +33,27 @@ export default class BubbleController {
         this.stateMachine.update(dt);
     }
 
+    touch(x: number, y: number) {
+        new Promise((resolve) => {
+            if (this.stateMachine.isCurrentState('growing') && this.bubble.getBounds().contains(x, y)) {
+                this.stateMachine.setState('popped');
+            }
+            resolve(true);
+        });
+    }
 
     private idleOnEnter() {
         this.stateMachine.setState('growing');
     }
 
     private growingOnUpdate(dt: number) {
-        if(this.pointer.isDown && this.bubble.getBounds().contains(this.pointer.x, this.pointer.y)) {
-            this.stateMachine.setState('popped');
-            return;
-        } else {
-            // const currentRadius = this.bubble.radius;
-            this.radius += this.growthRate * dt ;
-            this.bubble.setDisplaySize(this.radius * 2, this.radius * 2);
+        // const currentRadius = this.bubble.radius;
+        this.radius += this.growthRate * dt ;
+        this.bubble.y -= this.speedUp * dt;
+        this.bubble.setDisplaySize(this.radius * 2, this.radius * 2);
 
-            this.point = this.point - (this.pointDeceaseRate * dt);
-        }
+
+        this.point = this.point - (this.pointDeceaseRate * dt);
 
         if (this.point <= 0) {
             this.point = 0;
