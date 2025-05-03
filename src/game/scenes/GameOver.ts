@@ -31,10 +31,10 @@ export class GameOver extends Scene
             align: 'center'
         }).setOrigin(0.5);
 
-        const centerX = this.scale.width / 2;
-        const centerY = this.scale.height / 2 + 100;
+        const buttonX = this.cameras.main.centerX;
+        const buttonY = 50;
 
-        const restartButton = this.add.container(centerX, centerY).setVisible(false);
+        const restartButton = this.add.container(buttonX, buttonY).setVisible(false);
         
         const buttonWidth = 200;
         const buttonHeight = 100;
@@ -44,17 +44,14 @@ export class GameOver extends Scene
             fontFamily: 'Arial'
           }).setOrigin(0.5);
         
-          
-        const button = this.add.rectangle(centerX, centerY, buttonWidth, buttonHeight, 0xffffff, 1)
-            .setOrigin(0.5)
-           
+             
         restartButton.setInteractive(new Geom.Rectangle(-buttonWidth/2, -buttonHeight/2, buttonWidth, buttonHeight), Geom.Rectangle.Contains);
 
         restartButton.on('pointerdown', () => {
             this.scene.start('Game');
         });
         
-        restartButton.add([button, text]);
+        restartButton.add([text]);
 
         // 
         restartButton.setVisible(true);
