@@ -2,15 +2,16 @@ import StateMachine from '../utils/StateMachine';
 import EventBus from '../utils/EventBus';
 
 export default class BubbleController {
+    public damage: number = 10;
     private stateMachine: StateMachine;
     private bubble: Phaser.GameObjects.Sprite;
     private point: number;
     private speedUp: number = 0.5;
     private radius: number;
-    private growthRate = 0.15;
-    private pointDeceaseRate = 0.5;
+    private growthRate = 0.10;
+    private pointDeceaseRate = 0.005;
 
-    constructor(bubble: Phaser.GameObjects.Sprite, radius: number, point: number = 1000, pointDeceaseRate: number = 1) {
+    constructor(bubble: Phaser.GameObjects.Sprite, radius: number = 50, point: number = 1, pointDeceaseRate: number = 1) {
         this.bubble = bubble;
         this.point = point;
         this.radius = radius;
@@ -24,7 +25,9 @@ export default class BubbleController {
             onUpdate: this.growingOnUpdate,
         }).addState('popped', {
             onEnter: this.poppedOnEnter
-        })
+        }).addState('destroyed', {
+            onEnter: this.destroyedOnEnter
+        });
         this.stateMachine.setState('idle'); 
     }
 
@@ -52,13 +55,8 @@ export default class BubbleController {
         this.bubble.y -= this.speedUp * dt;
         this.bubble.setDisplaySize(this.radius * 2, this.radius * 2);
 
-
-        this.point = this.point - (this.pointDeceaseRate * dt);
-
-        if (this.point <= 0) {
-            this.point = 0;
-            this.stateMachine.setState('popped');
-            return;
+        if ((this.bubble.y + this.radius)< 0) {
+            this.stateMachine.setState('destroyed');
         }
         
     }
@@ -66,6 +64,13 @@ export default class BubbleController {
     private poppedOnEnter() {
         EventBus.emit('bubble.popped', this);
         EventBus.emit('score.marked', this.point);
+        this.bubble.setVisible(false);
+        this.bubble.setActive(false);
+        this.bubble.destroy();
+    }
+
+    private destroyedOnEnter() {
+        EventBus.emit('bubble.destroyed', this);
         this.bubble.setVisible(false);
         this.bubble.setActive(false);
         this.bubble.destroy();

@@ -12,7 +12,7 @@ export class MainMenu extends Scene
     {
 
         this.bubble = this.add.sprite(this.cameras.main.centerX, 200, 'sphere')
-        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Bubbles', {
+        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Bubbles SURVIVOR', {
             fontFamily: 'Arial Black', fontSize: 70, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'

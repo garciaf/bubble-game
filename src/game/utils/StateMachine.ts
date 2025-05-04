@@ -6,7 +6,6 @@ interface StateConfig {
 }
 
 export default class StateMachine {
-    
     private context?: any;
     private states = new Map<string, StateConfig>();    
     private currentState?: StateConfig;
