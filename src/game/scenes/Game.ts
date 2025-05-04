@@ -24,6 +24,8 @@ export class Game extends Scene
     {
         this.bubbles = [];
         this.score = 0;
+        this.health = 100;
+        this.touched = false;
     }
 
     create ()
