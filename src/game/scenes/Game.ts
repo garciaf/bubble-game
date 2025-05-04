@@ -1,4 +1,4 @@
-import { Scene, GameObjects, Math, Geom } from 'phaser';
+import { Scene } from 'phaser';
 import BubbleController from '../controllers/BubbleController';
 import CountdownController from '../controllers/CountdownController';
 import StopWatchController from '../controllers/StopWatchController';
@@ -34,7 +34,7 @@ export class Game extends Scene
         this.scene.launch('ui');
         
         this.stopWatch = new StopWatchController(this);
-        this.spawnWaveController = new SpawnWaveController(this, 1000, 10);
+        this.spawnWaveController = new SpawnWaveController(this);
 
         this.input.on('pointerdown', (pointer: { x: number; y: number; }) => {
             if(this.touched) {
@@ -48,7 +48,6 @@ export class Game extends Scene
 
         this.input.on('pointerup', () => {
             this.touched = false;
-            this.cameras.main.shake(100, 0.01); // Shake for 500ms with intensity 0.01
         });
 
 
