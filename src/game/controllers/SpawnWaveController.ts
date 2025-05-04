@@ -70,8 +70,6 @@ export default class SpawnWaveController {
         Promise.all(this.bubbles.map(bubble => { bubble.touch(x, y); }));
     }
         
-            
-
     private createBubbleWave() {    
         const x = Phaser.Math.Between(50, this.scene.scale.width - 50);  // Random x within game width
         const y = Phaser.Math.Between(1000, this.scene.scale.height); // Random y within game height

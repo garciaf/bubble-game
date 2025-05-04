@@ -51,6 +51,7 @@ export default class BubbleController {
         // const currentRadius = this.bubble.radius;
         this.radius += this.growthRate * dt ;
         this.bubble.y -= this.speedUp * dt;
+        this.bubble.x += Math.sin(this.bubble.y / 10) * 2;
         this.bubble.setDisplaySize(this.radius * 2, this.radius * 2);
 
         if ((this.bubble.y + this.radius)< 0) {

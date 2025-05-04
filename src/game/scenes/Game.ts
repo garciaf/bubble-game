@@ -73,6 +73,8 @@ export class Game extends Scene
                 this.scene.start('GameOver', { score: this.score });
             }
         });
+
+        this.setBackground();
     }
 
     update(time: number, delta: number): void {
@@ -82,5 +84,29 @@ export class Game extends Scene
         this.spawnWaveController?.update(time, delta);
         this.countdown?.update(delta);
         this.stopWatch?.update(time, delta);
+    }
+
+    private setBackground(){ 
+        const width = this.scale.width;
+        const height = this.scale.height;
+
+        // Create an offscreen canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext('2d')!;
+        const gradient = context.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(1, '#1e3c72'); // Light Blue
+        gradient.addColorStop(0, '#2a5298'); // Dark Blue
+
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, width, height);
+
+        // Add the canvas as a texture to Phaser
+        this.textures.addCanvas('bg-gradient', canvas);
+
+        // Add an image using the gradient texture
+        this.add.image(0, 0, 'bg-gradient').setOrigin(0, 0).setDepth(-1);
     }
 }   

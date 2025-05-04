@@ -25,12 +25,10 @@ export class UI extends Scene {
                 return;
             }
             this.score  += score
-            this.showPointScored(this.formatNumber(score))
             this.refreshScore();
         });
 
         EventBus.on('bubble.destroyed', (bubble: any) => {
-            this.showDamage(bubble.damage);
             this.setHealthBar(this.health -= bubble.damage);
         });
         
@@ -50,41 +48,6 @@ export class UI extends Scene {
 
     private refreshScore() {
         this.scoreText.setText(this.formatNumber(this.score));
-    }
-
-    private showDamage(damage: number) {
-        const damageText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, `-${damage}`, {
-            fontSize: 64,
-            color: '#ff0000'
-        }).setOrigin(0.5);
-        this.tweens.add({
-            targets: damageText,
-            y: damageText.y - 50,
-            alpha: 0,
-            duration: 1000,
-            ease: 'Power2',
-            onComplete: () => {
-                damageText.destroy();
-            }
-        });
-    }
-
-    private showPointScored(point: string) {
-        const pointText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, `+${point}`, {
-            fontSize: 64,
-            color: '#00ff00'
-        }).setOrigin(0.5);
-
-        this.tweens.add({
-            targets: pointText,
-            y: pointText.y - 50,
-            alpha: 0,
-            duration: 1000,
-            ease: 'Power2',
-            onComplete: () => {
-                pointText.destroy();
-            }
-        });
     }
 
     private setHealthBar(value: number)
