@@ -18,6 +18,7 @@ export class UI extends Scene {
     }
     init() {
         this.score = 0
+        this.health = 100
     }
     create () {
         EventBus.on('score.marked', (score: number) => {
