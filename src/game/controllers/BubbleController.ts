@@ -8,14 +8,12 @@ export default class BubbleController {
     private point: number;
     private speedUp: number = 0.5;
     private radius: number;
-    private growthRate = 0.10;
-    private pointDeceaseRate = 0.005;
+    private growthRate = 0.05;
 
-    constructor(bubble: Phaser.GameObjects.Sprite, radius: number = 50, point: number = 1, pointDeceaseRate: number = 1) {
+    constructor(bubble: Phaser.GameObjects.Sprite, radius: number = 20, point: number = 1) {
         this.bubble = bubble;
         this.point = point;
         this.radius = radius;
-        this.pointDeceaseRate = pointDeceaseRate;
         
         this.stateMachine = new StateMachine(this)
 

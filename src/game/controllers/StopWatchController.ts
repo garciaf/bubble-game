@@ -3,15 +3,15 @@ import { formatTime } from '../utils/FormatHelper';
 export default class StopWatchController {
     private stopwatch: Phaser.GameObjects.Text;
     private time: number;
-    private isRunning: boolean = false;
-    private onTimeUpdate: (time: number) => void;
 
     constructor(scene: Phaser.Scene) {
         this.time = 0;
-
-        this.stopwatch = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY - 300, '0', {
-            fontSize: '64px',
-            color: '#ffffff'
+        
+        this.stopwatch = scene.add.text(scene.scale.width - 60, 70, '0', {
+            fontSize: '30px',
+            color: '#ffffff',
+            stroke: '#000000', 
+            strokeThickness: 4
         }).setOrigin(0.5);
     }
 

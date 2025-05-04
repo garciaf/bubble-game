@@ -10,9 +10,9 @@ export function formatTime(time: number): string {
     if (minutes > 0) {
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     } else if (seconds > 0) {
-        return `${seconds}:${milliseconds}`;
+        return `${seconds < 10 ? '0' : ''}${seconds}:${milliseconds}`;
     } else if (milliseconds > 0) {
-        return `${milliseconds}`;   
+        return `00:${milliseconds}`;   
     } else {
         return '0';
     }
